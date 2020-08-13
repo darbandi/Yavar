@@ -51,6 +51,24 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
+const RootMutation = new GraphQLObjectType({
+  name: "RootMutationType",
+  fields: {
+    car: {
+      type: CarType,
+      args: {
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        color: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        return null;
+      },
+    },
+  },
+});
+
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation: RootMutation,
 });
