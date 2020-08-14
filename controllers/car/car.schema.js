@@ -1,21 +1,20 @@
 const graphql = require("graphql");
+const Car = require("./car.model");
+
 const {
   GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLBoolean,
   GraphQLString,
   GraphQLSchema,
   GraphQLList,
+  GraphQLID,
 } = graphql;
-
-let cars = [
-  { name: "Honda", color: "Red", id: "1" },
-  { name: "Toyota", color: "Blue", id: "2" },
-  { name: "BMW", color: "Blue", id: "3" },
-];
 
 const CarType = new GraphQLObjectType({
   name: "Car",
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     name: { type: GraphQLString },
     color: { type: GraphQLString },
   }),
@@ -27,13 +26,10 @@ const RootQuery = new GraphQLObjectType({
     car: {
       type: CarType,
       args: {
-        id: { type: GraphQLString },
+        id: { type: GraphQLID },
       },
       resolve(parent, args) {
-        if (args.id) {
-          return cars.find((car) => (car.id = args.id));
-        }
-        return null;
+        return Car.findById(args.id);
       },
     },
     cars: {
@@ -43,9 +39,11 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve(parent, args) {
         if (args.color) {
-          return cars.filter((car) => car.color === args.color);
+          return Car.find({
+            color: args.color,
+          });
         }
-        return cars;
+        return Car.find({});
       },
     },
   },
@@ -54,15 +52,19 @@ const RootQuery = new GraphQLObjectType({
 const RootMutation = new GraphQLObjectType({
   name: "RootMutationType",
   fields: {
-    car: {
+    addCar: {
       type: CarType,
       args: {
-        id: { type: GraphQLString },
         name: { type: GraphQLString },
         color: { type: GraphQLString },
       },
       resolve(parent, args) {
-        return null;
+        let car = new Car({
+          name: args.name,
+          color: args.color,
+        });
+        console.log(car);
+        return car.save();
       },
     },
   },

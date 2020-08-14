@@ -1,33 +1,54 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
 
-var carRouter = require('./routes/car');
-var usersRouter = require('./routes/users');
+// var carRouter = require("./routes/car.router");
+// var usersRouter = require("./routes/users.router");
+const cors = require("cors");
+
+const mongo = require("mongoose");
+const url = "mongodb://localhost:27017";
+
+mongo.connect(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongo.connection.once("open", () => {
+  console.log("connected to database");
+});
 
 var app = express();
-
-app.use(logger('dev'));
+// app.set("port", process.env.PORT || 3000);
+app.use(cors());
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', carRouter);
-// app.use('/users', usersRouter);
+// get Dynamic Controller
+var fs = require("fs");
+var routePath = "./routes/"; 
+fs.readdirSync(routePath).forEach(function (file) {
+  var route = routePath + file;
+  const address = "/" + file.replace(".router.js", "");
+  const dynamicController = require(route);
+  app.use(address, dynamicController);
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
