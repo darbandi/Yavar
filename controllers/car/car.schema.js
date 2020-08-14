@@ -63,7 +63,6 @@ const RootMutation = new GraphQLObjectType({
           name: args.name,
           color: args.color,
         });
-        console.log(car);
         return car.save();
       },
     },
