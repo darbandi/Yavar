@@ -4,8 +4,6 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-// var carRouter = require("./routes/car.router");
-// var usersRouter = require("./routes/users.router");
 const cors = require("cors");
 
 const mongo = require("mongoose");

@@ -9,10 +9,11 @@ const {
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
+  GraphQLInt,
 } = graphql;
 
 const LessonType = new GraphQLObjectType({
-  name: "Lesson",
+  name: "LessonType",
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -20,8 +21,8 @@ const LessonType = new GraphQLObjectType({
   }),
 });
 
-const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
+const Query = new GraphQLObjectType({
+  name: "QueryType",
   fields: {
     lesson: {
       type: LessonType,
@@ -40,15 +41,37 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(LessonType),
       args: {
         key: { type: GraphQLString },
+        page: { type: GraphQLInt },
+        count: { type: GraphQLInt },
       },
-      resolve(parent, args) {
+      resolve(parent, { key, page, count }) {
         try {
-          if (args.key) {
+          if (key) {
             return Lesson.find({
-              key: args.key,
+              key: key,
             });
           }
-          return Lesson.find({});
+
+          if (!page) page = 1;
+          if (!count) count = 10;
+
+          return Lesson.find(null, null, {
+            skip: (page - 1) * count,
+            limit: count,
+          });
+        } catch (error) {
+          throw new Error(error);
+        }
+      },
+    },
+    lessonsCount: {
+      type: GraphQLInt,
+      args: {},
+      resolve(parent, { key, page, count }) {
+        try {
+          return Lesson.countDocuments({}, (err, count) => {
+            return count;
+          });
         } catch (error) {
           throw new Error(error);
         }
@@ -57,8 +80,8 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
-const RootMutation = new GraphQLObjectType({
-  name: "RootMutationType",
+const Mutation = new GraphQLObjectType({
+  name: "MutationType",
   fields: {
     addLesson: {
       type: LessonType,
@@ -68,7 +91,7 @@ const RootMutation = new GraphQLObjectType({
       },
       resolve(parent, args) {
         try {
-          let lesson = new Lesson({
+          const lesson = new Lesson({
             name: args.name,
             key: args.key,
           });
@@ -87,7 +110,7 @@ const RootMutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         try {
-          let lesson = await Lesson.findById(args.id);
+          let lesson = await Lesson.findByIdAndUpdate(args.id);
           lesson.name = args.name;
           lesson.key = args.key;
           return lesson.save();
@@ -114,6 +137,6 @@ const RootMutation = new GraphQLObjectType({
 });
 
 module.exports = new GraphQLSchema({
-  query: RootQuery,
-  mutation: RootMutation,
+  query: Query,
+  mutation: Mutation,
 });
