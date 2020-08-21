@@ -12,12 +12,19 @@ const {
   GraphQLInt,
 } = graphql;
 
-const LessonType = new GraphQLObjectType({
-  name: "LessonType",
+const LessonSchema = new GraphQLObjectType({
+  name: "LessonSchema",
+  description: "the lesson schema",
   fields: () => ({
     id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    key: { type: GraphQLString },
+    name: {
+      type: GraphQLNonNull(GraphQLString),
+      description: "the field name",
+    },
+    key: {
+      type: GraphQLNonNull(GraphQLString),
+      description: "the field key",
+    },
   }),
 });
 
@@ -25,40 +32,43 @@ const Query = new GraphQLObjectType({
   name: "QueryType",
   fields: {
     lesson: {
-      type: LessonType,
+      type: LessonSchema,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve(parent, args) {
+      resolve: async (parent, { id }) => {
         try {
-          return Lesson.findById(args.id);
+          const result = await Lesson.findById(id);
+          if (!result) return new Error(`id ${id} not found`);
+          return result;
         } catch (error) {
           throw new Error(error);
         }
       },
     },
     lessons: {
-      type: new GraphQLList(LessonType),
+      type: new GraphQLList(LessonSchema),
       args: {
         key: { type: GraphQLString },
         page: { type: GraphQLInt },
         count: { type: GraphQLInt },
       },
-      resolve(parent, { key, page, count }) {
+      resolve: async (parent, { key, page, count }) => {
         try {
           if (key) {
-            return Lesson.find({
+            const result = await Lesson.find({
               key: key,
             });
+            return result;
           }
 
           if (!page) page = 1;
           if (!count) count = 10;
-
-          return Lesson.find(null, null, {
+          const result = await Lesson.find(null, null, {
             skip: (page - 1) * count,
             limit: count,
           });
+          return result;
         } catch (error) {
           throw new Error(error);
         }
@@ -67,11 +77,12 @@ const Query = new GraphQLObjectType({
     lessonsCount: {
       type: GraphQLInt,
       args: {},
-      resolve(parent, { key, page, count }) {
+      resolve: async (parent) => {
         try {
-          return Lesson.countDocuments({}, (err, count) => {
+          const result = await Lesson.countDocuments({}, (err, count) => {
             return count;
           });
+          return result;
         } catch (error) {
           throw new Error(error);
         }
@@ -84,16 +95,16 @@ const Mutation = new GraphQLObjectType({
   name: "MutationType",
   fields: {
     addLesson: {
-      type: LessonType,
+      type: LessonSchema,
       args: {
         name: { type: GraphQLString },
         key: { type: GraphQLString },
       },
-      resolve(parent, args) {
+      resolve: async (parent, { key, name }) => {
         try {
           const lesson = new Lesson({
-            name: args.name,
-            key: args.key,
+            name: name,
+            key: key,
           });
           return lesson.save();
         } catch (error) {
@@ -102,17 +113,17 @@ const Mutation = new GraphQLObjectType({
       },
     },
     updateLesson: {
-      type: LessonType,
+      type: LessonSchema,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         key: { type: GraphQLString },
       },
-      async resolve(parent, args) {
+      resolve: async (parent, { key, id, name }) => {
         try {
-          let lesson = await Lesson.findByIdAndUpdate(args.id);
-          lesson.name = args.name;
-          lesson.key = args.key;
+          let lesson = await Lesson.findByIdAndUpdate(id);
+          if (name) lesson.name = name;
+          if (key) lesson.key = key;
           return lesson.save();
         } catch (error) {
           throw new Error(error);
@@ -120,13 +131,14 @@ const Mutation = new GraphQLObjectType({
       },
     },
     deleteLesson: {
-      type: LessonType,
+      type: LessonSchema,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLNonNull(GraphQLID) },
       },
-      async resolve(parent, args) {
+      resolve: async (parent, { id }) => {
         try {
-          let lesson = await Lesson.findById(args.id);
+          let lesson = await Lesson.findById(id);
+          if (!lesson) return new Error(`id ${id} not found`);
           return lesson.deleteOne();
         } catch (error) {
           throw new Error(error);
