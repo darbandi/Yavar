@@ -6,18 +6,6 @@ var logger = require("morgan");
 
 const cors = require("cors");
 
-const mongo = require("mongoose");
-const url = "mongodb://localhost:27017";
-
-mongo.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-mongo.connection.once("open", () => {
-  console.log("connected to database");
-});
-
 var app = express();
 // app.set("port", process.env.PORT || 3000);
 app.use(cors());
