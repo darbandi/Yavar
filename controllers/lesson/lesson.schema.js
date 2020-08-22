@@ -36,14 +36,15 @@ const Query = new GraphQLObjectType({
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve: async (parent, { id }) => {
-        try {
-          const result = await Lesson.findById(id);
-          if (!result) return new Error(`id ${id} not found`);
-          return result;
-        } catch (error) {
-          throw new Error(error);
-        }
+      resolve: (parent, { id }) => {
+        return Lesson.findById(id)
+          .then((result) => {
+            if (!result) return new Error(`id ${id} not found`);
+            return result;
+          })
+          .catch((err) => {
+            throw err;
+          });
       },
     },
     lessons: {
@@ -53,39 +54,44 @@ const Query = new GraphQLObjectType({
         page: { type: GraphQLInt },
         count: { type: GraphQLInt },
       },
-      resolve: async (parent, { key, page, count }) => {
-        try {
-          if (key) {
-            const result = await Lesson.find({
-              key: key,
+      resolve: (parent, { key, page, count }) => {
+        if (key) {
+          return Lesson.find({
+            key: key,
+          })
+            .then((result) => {
+              return result;
+            })
+            .catch((err) => {
+              throw err;
             });
-            return result;
-          }
-
+        } else {
           if (!page) page = 1;
           if (!count) count = 10;
-          const result = await Lesson.find(null, null, {
+          return Lesson.find(null, null, {
             skip: (page - 1) * count,
             limit: count,
-          });
-          return result;
-        } catch (error) {
-          throw new Error(error);
+          })
+            .then((result) => {
+              return result;
+            })
+            .catch((err) => {
+              throw err;
+            });
         }
       },
     },
     lessonsCount: {
       type: GraphQLInt,
       args: {},
-      resolve: async (parent) => {
-        try {
-          const result = await Lesson.countDocuments({}, (err, count) => {
-            return count;
+      resolve: (parent) => {
+        return Lesson.countDocuments({})
+          .then((result) => {
+            return result;
+          })
+          .catch((err) => {
+            throw err;
           });
-          return result;
-        } catch (error) {
-          throw new Error(error);
-        }
       },
     },
   },
@@ -100,16 +106,19 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         key: { type: GraphQLString },
       },
-      resolve: async (parent, { key, name }) => {
-        try {
-          const lesson = new Lesson({
-            name: name,
-            key: key,
+      resolve: (parent, { key, name }) => {
+        const lesson = new Lesson({
+          name: name,
+          key: key,
+        });
+        return lesson
+          .save()
+          .then((lesson) => {
+            return lesson;
+          })
+          .catch((err) => {
+            throw err;
           });
-          return lesson.save();
-        } catch (error) {
-          throw new Error(error);
-        }
       },
     },
     updateLesson: {
@@ -119,15 +128,18 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         key: { type: GraphQLString },
       },
-      resolve: async (parent, { key, id, name }) => {
-        try {
-          let lesson = await Lesson.findByIdAndUpdate(id);
-          if (name) lesson.name = name;
-          if (key) lesson.key = key;
-          return lesson.save();
-        } catch (error) {
-          throw new Error(error);
-        }
+      resolve: (parent, { key, id, name }) => {
+        return (
+          Lesson.findByIdAndUpdate(id)
+            .then((lesson) => {
+              if (name) lesson.name = name;
+              if (key) lesson.key = key;
+              return lesson.save();
+            })
+            .catch((err) => {
+              throw err;
+            })
+        );
       },
     },
     deleteLesson: {
@@ -135,14 +147,15 @@ const Mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve: async (parent, { id }) => {
-        try {
-          let lesson = await Lesson.findById(id);
-          if (!lesson) return new Error(`id ${id} not found`);
-          return lesson.deleteOne();
-        } catch (error) {
-          throw new Error(error);
-        }
+      resolve: (parent, { id }) => {
+        return Lesson.findById(id)
+          .then((lesson) => {
+            if (!lesson) return new Error(`id ${id} not found`);
+            return lesson.deleteOne();
+          })
+          .catch((err) => {
+            throw err;
+          });
       },
     },
   },
