@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const LessonType = new Schema({
-  name: {
+const UserType = new Schema({
+  email: {
     type: String,
     required: true,
-    placeholder: "Name of the lesson",
+    placeholder: "Email of the user",
   },
-  key: {
+  password: {
     type: String,
     required: true,
   },
@@ -15,9 +15,6 @@ const LessonType = new Schema({
     type: Date,
     default: Date.now,
   },
-  user_id: {
-    type: String,
-  },
 });
 
-module.exports = mongoose.model("LessonModel", LessonType);
+module.exports = mongoose.model("UserModel", UserType);
