@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const UserType = new Schema({
+const UserModel = new Schema({
   email: {
     type: String,
     required: true,
@@ -10,6 +10,7 @@ const UserType = new Schema({
   password: {
     type: String,
     required: true,
+    min:6,
   },
   created_at: {
     type: Date,
@@ -17,4 +18,4 @@ const UserType = new Schema({
   },
 });
 
-module.exports = mongoose.model("UserModel", UserType);
+module.exports = mongoose.model("User", UserModel);

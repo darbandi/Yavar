@@ -26,7 +26,7 @@ var server = http.createServer(app);
  */
 
 const mongo = require("mongoose");
-const url = "mongodb://localhost:27017";
+const url = `${process.env.SERVER_ADDRESS}/${process.env.DTABASE_NAME}`;
 
 mongo
   .connect(url, {

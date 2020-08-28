@@ -1,23 +1,37 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const LessonType = new Schema({
-  name: {
+const LessonModel = new Schema({
+  surah_id: {
+    type: Number,
+    required: true,
+    description: "شماره سوره",
+  },
+  order: {
+    type: Number,
+    required: true,
+    description: "ترتیب سوره",
+  },
+  surah_name: {
     type: String,
     required: true,
-    placeholder: "Name of the lesson",
+    description: "نام سوره",
   },
-  key: {
+  verse_count: {
+    type: Number,
+    required: true,
+    description: "تعداد آیه‌های سوره",
+  },
+  sequence_of_descent: {
+    type: Number,
+    required: true,
+    description: "ترتیب نزول سوره",
+  },
+  place_of_descent: {
     type: String,
     required: true,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  user_id: {
-    type: String,
+    description: "محل نزول سوره",
   },
 });
 
-module.exports = mongoose.model("LessonModel", LessonType);
+module.exports = mongoose.model("Lesson", LessonModel);

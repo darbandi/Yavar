@@ -1,6 +1,6 @@
 const graphql = require("graphql");
-const LessonModel = require("./lesson.model");
-const LessonType = require("./lesson.type");
+const VerseModel = require("./verse.model");
+const VerseType = require("./verse.type");
 
 const {
   GraphQLObjectType,
@@ -13,16 +13,16 @@ const {
 } = graphql;
 
 /**
- * get one lesson
+ * get one verse
  */
-const lesson = {
-  type: LessonType,
-  description: "دریافت یک سوره",
+const verse = {
+  type: VerseType,
+  description: "دریافت یک آیه",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
   resolve: (parent, { id }) => {
-    return LessonModel.findById(id)
+    return VerseModel.findById(id)
       .then((result) => {
         if (!result) return new Error(`id ${id} not found`);
         return result;
@@ -34,20 +34,20 @@ const lesson = {
 };
 
 /**
- * get lessons list
+ * get verses list
  */
-const lessons = {
-  type: new GraphQLList(LessonType),
-  description: "دریافت لیست سوره‌ها",
+const verses = {
+  type: new GraphQLList(VerseType),
+  description: "دریافت لیست آیه‌ها",
   args: {
-    surah_id: { type: GraphQLInt },
+    verse_id: { type: GraphQLInt },
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { surah_id, page, count }) => {
-    if (surah_id) {
-      return LessonModel.find({
-        surah_id: surah_id,
+  resolve: (parent, { verse_id, page, count }) => {
+    if (verse_id) {
+      return VerseModel.find({
+        verse_id: verse_id,
       })
         .then((result) => {
           return result;
@@ -58,7 +58,7 @@ const lessons = {
     } else {
       if (!page) page = 1;
       if (!count) count = 10;
-      return LessonModel.find(null, null, {
+      return VerseModel.find(null, null, {
         skip: (page - 1) * count,
         limit: count,
       })
@@ -73,14 +73,14 @@ const lessons = {
 };
 
 /**
- * get total count of lessons
+ * get total count of verses
  */
-const lessonsCount = {
+const versesCount = {
   type: GraphQLInt,
-  description: "دریافت تعداد کل سوره‌ها",
+  description: "دریافت تعداد کل آیه‌ها",
   args: {},
   resolve: (parent) => {
-    return LessonModel.countDocuments({})
+    return VerseModel.countDocuments({})
       .then((result) => {
         return result;
       })
@@ -93,9 +93,9 @@ const lessonsCount = {
 const Query = new GraphQLObjectType({
   name: "Query",
   fields: {
-    lesson,
-    lessons,
-    lessonsCount,
+    verse,
+    verses,
+    versesCount,
   },
 });
 

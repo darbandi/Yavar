@@ -28,9 +28,23 @@ const login = {
       type: GraphQLString,
     },
   },
-  resolve: (parent, { email, password }, req) => {
-    const token = jwt.sign({ email, password }, "shhhhh", { expiresIn: "2h" });
-    return "Bearer " + token;
+  resolve: (parent, { email, password }, header) => {
+    let validUser = null;
+    return UserModel.findOne({ email })
+      .then((user) => {
+        validUser = user;
+        return bcrypt.compare(password, user.password);
+      })
+      .then((result) => {
+        if (!result) throw new Error("uset or password is invalid");
+        const token = jwt.sign({ ...validUser._doc }, "shhhhh", {
+          expiresIn: "2h",
+        });
+        return "Bearer " + token;
+      })
+      .catch((err) => {
+        throw err;
+      });
   },
 };
 
@@ -42,7 +56,7 @@ const user = {
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
-  resolve: (parent, { id }) => {
+  resolve: (parent, { id }, header) => {
     return UserModel.findById(id)
       .then((result) => {
         if (!result) return new Error(`id ${id} not found`);
@@ -65,10 +79,6 @@ const users = {
     count: { type: GraphQLInt },
   },
   resolve: (parent, { email, page, count }, header) => {
-    console.log("header : ", header);
-    // jwt.verify(token, "shhhhh", function (err, decoded) {
-    //   console.log(decoded);
-    // });
     if (email) {
       return UserModel.find({
         email: email,
@@ -122,8 +132,7 @@ const addUser = {
     email: { type: GraphQLString },
     password: { type: GraphQLString },
   },
-  resolve: (parent, { email, password }) => {
-    console.log("email, password : ", email, password);
+  resolve: (parent, { email, password }, header) => {
     return bcrypt
       .hash(password, 12)
       .then((hashedPassword) => {
@@ -131,7 +140,6 @@ const addUser = {
           email: email,
           password: hashedPassword,
         });
-        console.log("user : ", user);
         return user.save();
       })
       .then((user) => {
@@ -153,7 +161,7 @@ const updateUser = {
     email: { type: GraphQLString },
     password: { type: GraphQLString },
   },
-  resolve: (parent, { key, id, password }) => {
+  resolve: (parent, { key, id, password }, header) => {
     return UserModel.findByIdAndUpdate(id)
       .then((user) => {
         if (email) user.email = email;
@@ -188,7 +196,7 @@ const deleteUser = {
 };
 
 const Query = new GraphQLObjectType({
-  name: "QueryType",
+  name: "Query",
   fields: {
     login,
     user,
@@ -198,7 +206,7 @@ const Query = new GraphQLObjectType({
 });
 
 const Mutation = new GraphQLObjectType({
-  name: "MutationType",
+  name: "Mutation",
   fields: {
     addUser,
     updateUser,

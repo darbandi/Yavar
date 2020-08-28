@@ -1,25 +1,83 @@
 const graphql = require("graphql");
-const UserType = require("./../user/user.type");
-const UserModel = require("./../user/user.model");
-const { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } = graphql;
+const VerseType = require("./../verse/verse.type");
+const VerseModel = require("./../verse/verse.model");
+
+const {
+  GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLID,
+  GraphQLList,
+} = graphql;
 
 const LessonType = new GraphQLObjectType({
-  name: "LessonType",
-  description: "the lesson schema",
+  name: "Lesson",
+  description: "the surah schema",
   fields: () => ({
     id: { type: GraphQLID },
-    name: {
-      type: GraphQLNonNull(GraphQLString),
-      description: "the field name",
+    surah_id: {
+      type: GraphQLNonNull(GraphQLInt),
+      required: true,
+      description: "شماره سوره",
     },
-    key: {
-      type: GraphQLNonNull(GraphQLString),
-      description: "the field key",
+    order: {
+      type: GraphQLNonNull(GraphQLInt),
+      required: true,
+      description: "ترتیب سوره",
     },
-    user: {
-      type: UserType,
-      resolve: (parent, args) => {
-        return UserModel.findById(parent.user_id);
+    surah_name: {
+      type: GraphQLNonNull(GraphQLString),
+      required: true,
+      description: "نام سوره",
+    },
+    verse_count: {
+      type: GraphQLNonNull(GraphQLInt),
+      required: true,
+      description: "تعداد آیه‌های سوره",
+    },
+    sequence_of_descent: {
+      type: GraphQLNonNull(GraphQLInt),
+      required: true,
+      description: "ترتیب نزول سوره",
+    },
+    place_of_descent: {
+      type: GraphQLNonNull(GraphQLString),
+      required: true,
+      description: "محل نزول سوره",
+    },
+    verses: {
+      type: new GraphQLList(VerseType),
+      args: {
+        surah_id: { type: GraphQLInt },
+        page: { type: GraphQLInt },
+        count: { type: GraphQLInt },
+      },
+      resolve: (parent, { surah_id, page, count }) => {
+        if (surah_id) {
+          return VerseModel.find({
+            surah_id: surah_id,
+          })
+            .then((result) => {
+              return result;
+            })
+            .catch((err) => {
+              throw err;
+            });
+        } else {
+          if (!page) page = 1;
+          if (!count) count = 10;
+          return VerseModel.find(null, null, {
+            skip: (page - 1) * count,
+            limit: count,
+          })
+            .then((result) => {
+              return result;
+            })
+            .catch((err) => {
+              throw err;
+            });
+        }
       },
     },
   }),
