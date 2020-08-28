@@ -1,7 +1,8 @@
 const graphql = require("graphql");
 const VerseType = require("./../verse/verse.type");
 const VerseModel = require("./../verse/verse.model");
-
+// const TagType = require("./../tag/tag.type");
+// const TagModel = require("./../tag/tag.model");
 const {
   GraphQLObjectType,
   GraphQLNonNull,
@@ -15,7 +16,10 @@ const LessonType = new GraphQLObjectType({
   name: "Lesson",
   description: "the surah schema",
   fields: () => ({
-    id: { type: GraphQLID },
+    id: {
+      type: GraphQLID,
+      description: "آیدی یکتا",
+    },
     surah_id: {
       type: GraphQLNonNull(GraphQLInt),
       required: true,
@@ -48,38 +52,48 @@ const LessonType = new GraphQLObjectType({
     },
     verses: {
       type: new GraphQLList(VerseType),
+      description: "لیست آیه‌های این سوره ",
       args: {
-        surah_id: { type: GraphQLInt },
         page: { type: GraphQLInt },
         count: { type: GraphQLInt },
       },
-      resolve: (parent, { surah_id, page, count }) => {
-        if (surah_id) {
-          return VerseModel.find({
-            surah_id: surah_id,
+      resolve: (parent, { page, count }) => {
+        if (!page) page = 1;
+        if (!count) count = 10;
+        return VerseModel.find({ surah_id: parent.surah_id }, null, {
+          skip: (page - 1) * count,
+          limit: count,
+        })
+          .then((result) => {
+            return result;
           })
-            .then((result) => {
-              return result;
-            })
-            .catch((err) => {
-              throw err;
-            });
-        } else {
-          if (!page) page = 1;
-          if (!count) count = 10;
-          return VerseModel.find(null, null, {
-            skip: (page - 1) * count,
-            limit: count,
-          })
-            .then((result) => {
-              return result;
-            })
-            .catch((err) => {
-              throw err;
-            });
-        }
+          .catch((err) => {
+            throw err;
+          });
       },
     },
+    // tags: {
+    //   type: new GraphQLList(TagType),
+    //   description: "لیست تگ‌های این سوره",
+    //   args: {
+    //     page: { type: GraphQLInt },
+    //     count: { type: GraphQLInt },
+    //   },
+    //   resolve: (parent, { page, count }) => {
+    //     if (!page) page = 1;
+    //     if (!count) count = 10;
+    //     return TagModel.find({ surah_id: parent.surah_id }, null, {
+    //       skip: (page - 1) * count,
+    //       limit: count,
+    //     })
+    //       .then((result) => {
+    //         return result;
+    //       })
+    //       .catch((err) => {
+    //         throw err;
+    //       });
+    //   },
+    // },
   }),
 });
 module.exports = LessonType;

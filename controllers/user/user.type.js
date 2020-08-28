@@ -5,7 +5,10 @@ const UserType = new GraphQLObjectType({
   name: "User",
   description: "the user schema",
   fields: () => ({
-    id: { type: GraphQLID },
+    id: {
+      type: GraphQLID,
+      description: "آیدی یکتا",
+    },
     email: {
       type: GraphQLNonNull(GraphQLString),
       description: "email address",
