@@ -5,7 +5,7 @@ const { Auth } = require("../Utils.js");
 
 var router = express.Router();
 
-// router.use("/", Auth);
+router.use("/", Auth);
 
 router.use("/", (req, res) => {
   graphqlHTTP({

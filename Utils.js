@@ -2,8 +2,11 @@ const jwt = require("jsonwebtoken");
 // const UserType = require("./controllers/user/user.type");
 const UserModel = require("./controllers/user/user.model");
 
+/**
+ * find current user
+ * @param {*} header 
+ */
 const GetUser = (header) => {
-  console.log(" *************** user: ");
   return UserModel.findOne({
     _id: header.account._id,
     email: header.account.email,
@@ -19,6 +22,12 @@ const GetUser = (header) => {
     });
 };
 
+/**
+ * handle request authorization
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const Auth = (req, res, next) => {
   if (!req.headers.authorization) {
     res.statusCode = 401;
@@ -36,6 +45,12 @@ const Auth = (req, res, next) => {
   }
 };
 
+/**
+ * بررسی اینکه کاربر جاری به داده‌های دریافت شده دسترسی دارد یا نه
+ * @param {*} result 
+ * @param {*} header 
+ * @param {*} error 
+ */
 const AccessToContent = (result, header, error) => {
   if (!result) throw new Error(error);
 
