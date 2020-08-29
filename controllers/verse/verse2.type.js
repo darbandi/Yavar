@@ -1,7 +1,7 @@
 const graphql = require("graphql");
-const TagType = require("./../tag/tag.type");
-const TagModel = require("./../tag/tag.model");
 const _ = require("lodash");
+const LessonType = require("../lesson/lesson2.type");
+const LessonModel = require("../lesson/lesson.model");
 
 const {
   GraphQLObjectType,
@@ -12,8 +12,8 @@ const {
   GraphQLList,
 } = graphql;
 
-const VerseType = new GraphQLObjectType({
-  name: "Verse",
+const Verse2Type = new GraphQLObjectType({
+  name: "Verse2",
   fields: () => ({
     id: {
       type: GraphQLID,
@@ -59,36 +59,20 @@ const VerseType = new GraphQLObjectType({
       required: true,
       description: "شماره صفحه",
     },
-    tags: {
-      type: new GraphQLList(TagType),
-      description: "لیست تگ‌های این آیه",
-      args: {
-        page: { type: GraphQLInt },
-        count: { type: GraphQLInt },
-      },
-      resolve: (parent, { page, count }, header) => {
-        if (!page) page = 1;
-        if (!count) count = 10;
-        return TagModel.find(
-          {
-            surah_id: parent.surah_id,
-            verse_id: parent.verse_id,
-            user_id: header.account._id,
-          },
-          null,
-          {
-            skip: (page - 1) * count,
-            limit: count,
-          }
-        )
+    lesson: {
+      type: LessonType,
+      resolve: (parent, args) => {
+        return LessonModel.findOne({
+          surah_id: parent.surah_id,
+        })
           .then((result) => {
             return result;
           })
-          .catch((err) => {
-            throw err;
+          .catch((error) => {
+            throw error;
           });
       },
     },
   }),
 });
-module.exports = VerseType;
+module.exports = Verse2Type;

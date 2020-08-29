@@ -1,6 +1,9 @@
 const graphql = require("graphql");
 const UserType = require("./../user/user.type");
 const UserModel = require("./../user/user.model");
+const VerseType = require("./../verse/verse2.type");
+const VerseModel = require("./../verse/verse.model");
+
 const {
   GraphQLObjectType,
   GraphQLNonNull,
@@ -12,7 +15,6 @@ const {
 
 const TagType = new GraphQLObjectType({
   name: "Tag",
-  description: "the tag schema",
   fields: () => ({
     id: {
       type: GraphQLID,
@@ -53,6 +55,21 @@ const TagType = new GraphQLObjectType({
       description: "کاربر",
       resolve: (parent, args) => {
         return UserModel.findById(parent.user_id)
+          .then((result) => {
+            return result;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      },
+    },
+    verse: {
+      type: VerseType,
+      description: "آیه",
+      resolve: (parent, args) => {
+        return VerseModel.findOne({
+          verse_id: parent.verse_id,
+        })
           .then((result) => {
             return result;
           })

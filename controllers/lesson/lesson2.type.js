@@ -1,6 +1,4 @@
 const graphql = require("graphql");
-const VerseType = require("./../verse/verse.type");
-const VerseModel = require("./../verse/verse.model");
 const {
   GraphQLObjectType,
   GraphQLNonNull,
@@ -10,8 +8,8 @@ const {
   GraphQLList,
 } = graphql;
 
-const LessonType = new GraphQLObjectType({
-  name: "Lesson",
+const Lesson2Type = new GraphQLObjectType({
+  name: "Lesson2",
   description: "اسکیمای سوره‌ها",
   fields: () => ({
     id: {
@@ -48,28 +46,6 @@ const LessonType = new GraphQLObjectType({
       required: true,
       description: "محل نزول سوره",
     },
-    verses: {
-      type: new GraphQLList(VerseType),
-      description: "لیست آیه‌های این سوره ",
-      args: {
-        page: { type: GraphQLInt },
-        count: { type: GraphQLInt },
-      },
-      resolve: (parent, { page, count }) => {
-        if (!page) page = 1;
-        if (!count) count = 10;
-        return VerseModel.find({ surah_id: parent.surah_id }, null, {
-          skip: (page - 1) * count,
-          limit: count,
-        })
-          .then((result) => {
-            return result;
-          })
-          .catch((err) => {
-            throw err;
-          });
-      },
-    },
   }),
 });
-module.exports = LessonType;
+module.exports = Lesson2Type;
