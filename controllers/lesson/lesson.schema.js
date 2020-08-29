@@ -17,7 +17,7 @@ const {
  */
 const lesson = {
   type: LessonType,
-  description: "دریافت یک سوره",
+  description: "دریافت جزئیات یک سوره",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -38,7 +38,7 @@ const lesson = {
  */
 const lessons = {
   type: new GraphQLList(LessonType),
-  description: "دریافت لیست سوره‌ها",
+  description: "دریافت لیست سوره‌ها - فیلتر بر روی آیدی سوره",
   args: {
     surah_id: { type: GraphQLInt },
     page: { type: GraphQLInt },
@@ -92,6 +92,7 @@ const lessonsCount = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
+  description: "دریافت اطلاعات سوره‌ها",
   fields: {
     lesson,
     lessons,

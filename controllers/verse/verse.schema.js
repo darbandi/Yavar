@@ -17,7 +17,7 @@ const {
  */
 const verse = {
   type: VerseType,
-  description: "دریافت یک آیه",
+  description: "دریافت جزئیات یک آیه",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -38,7 +38,7 @@ const verse = {
  */
 const verses = {
   type: new GraphQLList(VerseType),
-  description: "دریافت لیست آیه‌ها",
+  description: "دریافت لیست آیه‌ها - فیلتر بر روی آیدی آیه",
   args: {
     verse_id: { type: GraphQLInt },
     page: { type: GraphQLInt },
@@ -92,6 +92,7 @@ const versesCount = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
+  description: "دریافت اطلاعات آیه‌ها",
   fields: {
     verse,
     verses,

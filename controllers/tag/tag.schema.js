@@ -19,6 +19,7 @@ const {
  */
 const tag = {
   type: TagType,
+  description:"دریافت جزئیات یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -38,6 +39,7 @@ const tag = {
  */
 const tags = {
   type: new GraphQLList(TagType),
+  description: "دریافت لیست تگ‌ها - فیلتر بر روی متن تگ",
   args: {
     text: { type: GraphQLString },
     page: { type: GraphQLInt },
@@ -83,6 +85,7 @@ const tags = {
  */
 const tagsCount = {
   type: GraphQLInt,
+  description: "دریافت تعداد کل تگ‌های کاربر جاری",
   args: {},
   resolve: (parent, args, header) => {
     return TagModel.countDocuments({ user_id: header.account._id })
@@ -100,6 +103,7 @@ const tagsCount = {
  */
 const addTag = {
   type: TagType,
+  description: "افزودن تگ",
   args: {
     surah_id: { type: GraphQLInt },
     verse_id: { type: GraphQLInt },
@@ -128,6 +132,7 @@ const addTag = {
  */
 const updateTag = {
   type: TagType,
+  description: "ویرایش یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
     text: { type: GraphQLString },
@@ -152,6 +157,7 @@ const updateTag = {
  */
 const deleteTag = {
   type: TagType,
+  description: "حذف یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -173,7 +179,7 @@ const deleteTag = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
-  description:"test",
+  description:"دریافت اطلاعات تگ‌ها",
   fields: {
     tag,
     tags,
@@ -183,6 +189,7 @@ const Query = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
+  description: "ذخیره اطلاعات تگ",
   fields: {
     addTag,
     updateTag,

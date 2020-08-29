@@ -17,6 +17,7 @@ const {
  */
 const user = {
   type: UserType,
+  description: "دریافت جزئیات یک کاربر",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -37,6 +38,7 @@ const user = {
  */
 const users = {
   type: new GraphQLList(UserType),
+  description: "دریافت لیست کاربران - فیلتر بر روی ایمیل کاربر",
   args: {
     email: { type: GraphQLString },
     page: { type: GraphQLInt },
@@ -75,6 +77,7 @@ const users = {
  */
 const usersCount = {
   type: GraphQLInt,
+  description: "دریافت تعداد کل کاربران",
   args: {},
   resolve: (parent) => {
     return UserModel.countDocuments({})
@@ -92,6 +95,7 @@ const usersCount = {
  */
 const updateUser = {
   type: UserType,
+  description: "ویرایش یک کاربر",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
     email: { type: GraphQLString },
@@ -115,6 +119,7 @@ const updateUser = {
  */
 const deleteUser = {
   type: UserType,
+  description: "حذف یک کاربر",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -133,6 +138,7 @@ const deleteUser = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
+  description: "دریافت اطلاعات کاربران",
   fields: {
     user,
     users,
@@ -142,6 +148,7 @@ const Query = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
+  description: "ذخیره اطلاعات کاربران",
   fields: {
     updateUser,
     deleteUser,

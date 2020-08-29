@@ -15,6 +15,7 @@ const {
  */
 const login = {
   type: GraphQLString,
+  description: "ورود",
   args: {
     email: {
       type: GraphQLString,
@@ -48,6 +49,7 @@ const login = {
  */
 const register = {
   type: AccountType,
+  description: "ثبت نام",
   args: {
     email: { type: GraphQLString },
     password: { type: GraphQLString },
@@ -80,6 +82,7 @@ const register = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
+  description: "ورود کاربران",
   fields: {
     login,
   },
@@ -87,6 +90,7 @@ const Query = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
+  description: "ثبت نام کاربران",
   fields: {
     register,
   },
