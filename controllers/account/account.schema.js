@@ -4,11 +4,7 @@ const AccountType = require("./../user/user.type");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLSchema,
-} = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
 
 /**
  * login
@@ -28,11 +24,13 @@ const login = {
     let validAccount = null;
     return AccountModel.findOne({ email })
       .then((account) => {
+        if (!account) throw new Error("اطلاعات وارد شده صحیح نیست");
         validAccount = account;
         return bcrypt.compare(password, account.password);
       })
       .then((result) => {
-        if (!result) throw new Error("uset or password is invalid");
+        // result is boolean
+        if (!result) throw new Error("اطلاعات وارد شده صحیح نیست");
         const token = jwt.sign({ ...validAccount._doc }, "shhhhh", {
           expiresIn: "100h",
         });

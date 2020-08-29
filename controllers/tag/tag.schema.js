@@ -26,7 +26,7 @@ const tag = {
   resolve: (parent, { id }, header) => {
     return TagModel.findById(id)
       .then((tag) => {
-        return AccessToContent(tag, header, `id ${id} not found`);
+        return AccessToContent(tag, header, `${id} یافت نشد`);
       })
       .catch((err) => {
         throw err;
@@ -140,7 +140,7 @@ const updateTag = {
   resolve: (parent, { id, text }, header) => {
     return TagModel.findByIdAndUpdate(id)
       .then((tag) => {
-        return AccessToContent(tag, header, `id ${id} not found`);
+        return AccessToContent(tag, header, `${id} یافت نشد`);
       })
       .then((tag) => {
         if (text) tag.text = text;
@@ -165,10 +165,9 @@ const deleteTag = {
     //   return TagModel.deleteMany();
     return TagModel.findById(id)
       .then((tag) => {
-        return AccessToContent(tag, header, `id ${id} not found`);
+        return AccessToContent(tag, header, `${id} یافت نشد`);
       })
       .then((tag) => {
-        if (!tag) return new Error(`id ${id} not found`);
         return tag.deleteOne();
       })
       .catch((err) => {
