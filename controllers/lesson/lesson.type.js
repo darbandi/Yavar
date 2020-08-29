@@ -72,28 +72,6 @@ const LessonType = new GraphQLObjectType({
           });
       },
     },
-    // tags: {
-    //   type: new GraphQLList(TagType),
-    //   description: "لیست تگ‌های این سوره",
-    //   args: {
-    //     page: { type: GraphQLInt },
-    //     count: { type: GraphQLInt },
-    //   },
-    //   resolve: (parent, { page, count }) => {
-    //     if (!page) page = 1;
-    //     if (!count) count = 10;
-    //     return TagModel.find({ surah_id: parent.surah_id }, null, {
-    //       skip: (page - 1) * count,
-    //       limit: count,
-    //     })
-    //       .then((result) => {
-    //         return result;
-    //       })
-    //       .catch((err) => {
-    //         throw err;
-    //       });
-    //   },
-    // },
   }),
 });
 module.exports = LessonType;

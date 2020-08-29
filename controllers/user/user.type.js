@@ -11,11 +11,16 @@ const UserType = new GraphQLObjectType({
     },
     email: {
       type: GraphQLNonNull(GraphQLString),
-      description: "email address",
+      description: "پست الکترونیکی (ایمیل)",
     },
     password: {
       type: GraphQLNonNull(GraphQLString),
-      description: "password",
+      description: "رمز عبور",
+    },
+    created_at: {
+      type: GraphQLNonNull(GraphQLString),
+      default: Date.now,
+      description: "تاریخ ایجاد",
     },
   }),
 });

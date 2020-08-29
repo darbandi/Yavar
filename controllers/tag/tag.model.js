@@ -28,6 +28,10 @@ const TagModel = new Schema({
     default: Date.now,
     description: "تاریخ ایجاد",
   },
+  user_id: {
+    type: String,
+    description: "آیدی کاربر",
+  },
 });
 
 module.exports = mongoose.model("Tag", TagModel);

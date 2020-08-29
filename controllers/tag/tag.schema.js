@@ -1,8 +1,7 @@
 const graphql = require("graphql");
 const TagModel = require("./tag.model");
-const bcrypt = require("bcryptjs");
 const TagType = require("./tag.type");
-const jwt = require("jsonwebtoken");
+const { AccessToContent } = require("./../../Utils");
 
 const {
   GraphQLObjectType,
@@ -25,9 +24,8 @@ const tag = {
   },
   resolve: (parent, { id }, header) => {
     return TagModel.findById(id)
-      .then((result) => {
-        if (!result) return new Error(`id ${id} not found`);
-        return result;
+      .then((tag) => {
+        return AccessToContent(tag, header, `id ${id} not found`);
       })
       .catch((err) => {
         throw err;
@@ -49,6 +47,7 @@ const tags = {
     if (text) {
       return TagModel.find({
         text: text,
+        user_id: header.account._id,
       })
         .then((result) => {
           return result;
@@ -59,10 +58,16 @@ const tags = {
     } else {
       if (!page) page = 1;
       if (!count) count = 10;
-      return TagModel.find(null, null, {
-        skip: (page - 1) * count,
-        limit: count,
-      })
+      return TagModel.find(
+        {
+          user_id: header.account._id,
+        },
+        null,
+        {
+          skip: (page - 1) * count,
+          limit: count,
+        }
+      )
         .then((result) => {
           return result;
         })
@@ -79,8 +84,8 @@ const tags = {
 const tagsCount = {
   type: GraphQLInt,
   args: {},
-  resolve: (parent) => {
-    return TagModel.countDocuments({})
+  resolve: (parent, args, header) => {
+    return TagModel.countDocuments({ user_id: header.account._id })
       .then((result) => {
         return result;
       })
@@ -105,6 +110,7 @@ const addTag = {
       surah_id,
       verse_id,
       text,
+      user_id: header.account._id,
     });
     return tag
       .save()
@@ -125,13 +131,14 @@ const updateTag = {
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
     text: { type: GraphQLString },
-    is_delete: { type: GraphQLBoolean, default: false },
   },
-  resolve: (parent, { id, text, is_delete = false }, header) => {
+  resolve: (parent, { id, text }, header) => {
     return TagModel.findByIdAndUpdate(id)
       .then((tag) => {
+        return AccessToContent(tag, header, `id ${id} not found`);
+      })
+      .then((tag) => {
         if (text) tag.text = text;
-        tag.is_delete = is_delete;
         return tag.save();
       })
       .catch((err) => {
@@ -148,9 +155,12 @@ const deleteTag = {
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
-  resolve: (parent, { id }) => {
+  resolve: (parent, { id }, header) => {
     //   return TagModel.deleteMany();
     return TagModel.findById(id)
+      .then((tag) => {
+        return AccessToContent(tag, header, `id ${id} not found`);
+      })
       .then((tag) => {
         if (!tag) return new Error(`id ${id} not found`);
         return tag.deleteOne();
@@ -163,6 +173,7 @@ const deleteTag = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
+  description:"test",
   fields: {
     tag,
     tags,

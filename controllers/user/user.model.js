@@ -5,16 +5,18 @@ const UserModel = new Schema({
   email: {
     type: String,
     required: true,
-    placeholder: "Email of the user",
+    description: "پست الکترونیکی (ایمیل)",
   },
   password: {
     type: String,
     required: true,
-    min:6,
+    min: 6,
+    description: "رمز عبور",
   },
   created_at: {
     type: Date,
     default: Date.now,
+    description: "تاریخ ایجاد",
   },
 });
 

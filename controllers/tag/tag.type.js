@@ -1,4 +1,6 @@
 const graphql = require("graphql");
+const UserType = require("./../user/user.type");
+const UserModel = require("./../user/user.model");
 const {
   GraphQLObjectType,
   GraphQLNonNull,
@@ -41,6 +43,23 @@ const TagType = new GraphQLObjectType({
       type: GraphQLNonNull(GraphQLString),
       default: Date.now,
       description: "تاریخ ایجاد",
+    },
+    user_id: {
+      type: GraphQLNonNull(GraphQLString),
+      description: "آیدی کاربر",
+    },
+    user: {
+      type: UserType,
+      description: "کاربر",
+      resolve: (parent, args) => {
+        return UserModel.findById(parent.user_id)
+          .then((result) => {
+            return result;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      },
     },
   }),
 });

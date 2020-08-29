@@ -1,11 +1,8 @@
 var express = require("express");
 const { graphqlHTTP } = require("express-graphql");
-var schema = require("../controllers/lesson/lesson.schema.js");
-const { Auth } = require("../Utils.js");
+var schema = require("../controllers/account/account.schema.js");
 
 var router = express.Router();
-
-router.use("/", Auth);
 
 router.use("/", (req, res) => {
   graphqlHTTP({

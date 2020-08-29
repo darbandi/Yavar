@@ -68,13 +68,14 @@ const VerseType = new GraphQLObjectType({
         page: { type: GraphQLInt },
         count: { type: GraphQLInt },
       },
-      resolve: (parent, { page, count }) => {
+      resolve: (parent, { page, count }, header) => {
         if (!page) page = 1;
         if (!count) count = 10;
         return TagModel.find(
           {
             surah_id: parent.surah_id,
             verse_id: parent.verse_id,
+            user_id: header.account._id,
           },
           null,
           {

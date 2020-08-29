@@ -1,52 +1,16 @@
 const graphql = require("graphql");
 const UserModel = require("./user.model");
-const bcrypt = require("bcryptjs");
 const UserType = require("./user.type");
-const jwt = require("jsonwebtoken");
 
 const {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLBoolean,
   GraphQLString,
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
   GraphQLInt,
 } = graphql;
-
-/**
- * login
- */
-const login = {
-  type: GraphQLString,
-  args: {
-    email: {
-      type: GraphQLString,
-    },
-    password: {
-      type: GraphQLString,
-    },
-  },
-  resolve: (parent, { email, password }, header) => {
-    let validUser = null;
-    return UserModel.findOne({ email })
-      .then((user) => {
-        validUser = user;
-        return bcrypt.compare(password, user.password);
-      })
-      .then((result) => {
-        if (!result) throw new Error("uset or password is invalid");
-        const token = jwt.sign({ ...validUser._doc }, "shhhhh", {
-          expiresIn: "2h",
-        });
-        return "Bearer " + token;
-      })
-      .catch((err) => {
-        throw err;
-      });
-  },
-};
 
 /**
  * get one user
@@ -124,34 +88,6 @@ const usersCount = {
 };
 
 /**
- * add one user
- */
-const addUser = {
-  type: UserType,
-  args: {
-    email: { type: GraphQLString },
-    password: { type: GraphQLString },
-  },
-  resolve: (parent, { email, password }, header) => {
-    return bcrypt
-      .hash(password, 12)
-      .then((hashedPassword) => {
-        const user = new UserModel({
-          email: email,
-          password: hashedPassword,
-        });
-        return user.save();
-      })
-      .then((user) => {
-        return user;
-      })
-      .catch((err) => {
-        throw err;
-      });
-  },
-};
-
-/**
  * update one user
  */
 const updateUser = {
@@ -198,7 +134,6 @@ const deleteUser = {
 const Query = new GraphQLObjectType({
   name: "Query",
   fields: {
-    login,
     user,
     users,
     usersCount,
@@ -208,7 +143,6 @@ const Query = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    addUser,
     updateUser,
     deleteUser,
   },
