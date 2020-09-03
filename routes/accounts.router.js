@@ -1,6 +1,6 @@
-var express = require("express");
-const { graphqlHTTP } = require("express-graphql");
-var schema = require("../controllers/account/account.schema.js");
+import express from "express";
+import { graphqlHTTP } from "express-graphql";
+import schema from "../controllers/account/account.schema.js";
 
 var router = express.Router();
 
@@ -11,4 +11,4 @@ router.use("/", (req, res) => {
   })(req, res);
 });
 
-module.exports = router;
+export default router;

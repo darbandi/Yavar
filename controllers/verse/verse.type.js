@@ -1,18 +1,16 @@
-const graphql = require("graphql");
-const TagType = require("./../tag/tag.type");
-const TagModel = require("./../tag/tag.model");
-const LessonType = require("../lesson/lesson.type");
-const LessonModel = require("../lesson/lesson.model");
-const _ = require("lodash");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString,
   GraphQLInt,
   GraphQLID,
   GraphQLList,
-} = graphql;
+} from "graphql";
+import { TagType } from "./../tag/tag.type";
+import TagModel from "./../tag/tag.model";
+import { Lesson2Type } from "../lesson/lesson.type";
+import LessonModel from "../lesson/lesson.model";
+import _ from "lodash";
 
 const OBJ = {
   id: {
@@ -66,7 +64,7 @@ const VerseType = new GraphQLObjectType({
   fields: () => ({
     ...OBJ,
     tags: {
-      type: new GraphQLList(TagType.TagType),
+      type: new GraphQLList(TagType),
       description: "لیست تگ‌های این آیه",
       args: {
         page: { type: GraphQLInt },
@@ -103,7 +101,7 @@ const Verse2Type = new GraphQLObjectType({
   fields: () => ({
     ...OBJ,
     lesson: {
-      type: LessonType.Lesson2Type,
+      type: Lesson2Type,
       resolve: (parent, args) => {
         return LessonModel.findOne({
           surah_id: parent.surah_id,
@@ -119,5 +117,4 @@ const Verse2Type = new GraphQLObjectType({
   }),
 });
 
-module.exports.VerseType = VerseType;
-module.exports.Verse2Type = Verse2Type;
+export { VerseType, Verse2Type };

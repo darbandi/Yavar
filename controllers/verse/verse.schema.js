@@ -1,22 +1,19 @@
-const graphql = require("graphql");
-const VerseModel = require("./verse.model");
-const VerseType = require("./verse.type");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLString,
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
   GraphQLInt,
-} = graphql;
+} from "graphql";
+import VerseModel from "./verse.model";
+import { VerseType } from "./verse.type";
 
 /**
  * get one verse
  */
 const verse = {
-  type: VerseType.VerseType,
+  type: VerseType,
   description: "دریافت جزئیات یک آیه",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -37,7 +34,7 @@ const verse = {
  * get verses list
  */
 const verses = {
-  type: new GraphQLList(VerseType.VerseType),
+  type: new GraphQLList(VerseType),
   description: "دریافت لیست آیه‌ها - فیلتر بر روی آیدی آیه",
   args: {
     verse_id: { type: GraphQLInt },
@@ -100,6 +97,6 @@ const Query = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: Query,
 });

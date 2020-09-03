@@ -1,8 +1,4 @@
-const graphql = require("graphql");
-const UserModel = require("./user.model");
-const UserType = require("./user.type");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString,
@@ -10,7 +6,9 @@ const {
   GraphQLList,
   GraphQLID,
   GraphQLInt,
-} = graphql;
+} from "graphql";
+import UserModel from "./user.model";
+import UserType from "./user.type";
 
 /**
  * get one user
@@ -155,7 +153,7 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: Query,
   mutation: Mutation,
 });

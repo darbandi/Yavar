@@ -1,10 +1,8 @@
-const graphql = require("graphql");
-const AccountModel = require("./../user/user.model");
-const AccountType = require("./../user/user.type");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
+import { GraphQLObjectType, GraphQLString, GraphQLSchema } from "graphql";
+import AccountModel from "./../user/user.model";
+import AccountType from "./../user/user.type";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 /**
  * login
@@ -94,7 +92,7 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: Query,
   mutation: Mutation,
 });

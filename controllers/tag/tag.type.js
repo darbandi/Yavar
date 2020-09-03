@@ -1,17 +1,15 @@
-const graphql = require("graphql");
-const UserType = require("./../user/user.type");
-const UserModel = require("./../user/user.model");
-const VerseType = require("./../verse/verse.type");
-const VerseModel = require("./../verse/verse.model");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString,
   GraphQLID,
   GraphQLInt,
   GraphQLBoolean,
-} = graphql;
+} from "graphql";
+import UserType from "./../user/user.type";
+import UserModel from "./../user/user.model";
+import { Verse2Type } from "./../verse/verse.type";
+import VerseModel from "./../verse/verse.model";
 
 const OBJ = {
   id: {
@@ -68,7 +66,7 @@ const TagType = new GraphQLObjectType({
       },
     },
     verse: {
-      type: VerseType.Verse2Type,
+      type: Verse2Type,
       description: "آیه",
       resolve: (parent, args) => {
         return VerseModel.findOne({
@@ -85,4 +83,4 @@ const TagType = new GraphQLObjectType({
   }),
 });
 
-module.exports.TagType = TagType;
+export { TagType };

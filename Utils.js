@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const UserModel = require("./controllers/user/user.model");
+import jwt from "jsonwebtoken";
+import UserModel from "./controllers/user/user.model";
 
 /**
  * find current user
@@ -60,4 +60,4 @@ const AccessToContent = (result, header, error) => {
   return result;
 };
 
-module.exports = { GetUser, Auth, AccessToContent };
+export { GetUser, Auth, AccessToContent };

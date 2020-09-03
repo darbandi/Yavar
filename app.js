@@ -1,10 +1,10 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-
-const cors = require("cors");
+import createError from "http-errors";
+import express from "express";
+import path from "path";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import cors from "cors";
+import fs from "fs";
 
 var app = express();
 // app.set("port", process.env.PORT || 3000);
@@ -16,13 +16,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // get Dynamic Controller
-var fs = require("fs");
-var routePath = "./routes/"; 
+var routePath = "./routes/";
 fs.readdirSync(routePath).forEach(function (file) {
   var route = routePath + file;
   const address = "/" + file.replace(".router.js", "");
   const dynamicController = require(route);
-  app.use(address, dynamicController);
+  app.use(address, dynamicController.default);
 });
 
 // catch 404 and forward to error handler
@@ -44,4 +43,4 @@ app.use(function (err, req, res, next) {
   });
 });
 
-module.exports = app;
+export default app;

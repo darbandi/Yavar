@@ -1,14 +1,13 @@
-const graphql = require("graphql");
-const VerseType = require("./../verse/verse.type");
-const VerseModel = require("./../verse/verse.model");
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLString,
   GraphQLInt,
   GraphQLID,
   GraphQLList,
-} = graphql;
+} from "graphql";
+import { VerseType } from "./../verse/verse.type";
+import VerseModel from "./../verse/verse.model";
 
 const OBJ = {
   id: {
@@ -53,7 +52,7 @@ const LessonType = new GraphQLObjectType({
   fields: () => ({
     ...OBJ,
     verses: {
-      type: new GraphQLList(VerseType.VerseType),
+      type: new GraphQLList(VerseType),
       description: "لیست آیه‌های این سوره ",
       args: {
         page: { type: GraphQLInt },
@@ -81,9 +80,8 @@ const Lesson2Type = new GraphQLObjectType({
   name: "Lesson2",
   description: "اسکیمای سوره‌ها",
   fields: () => ({
-    ...OBJ
+    ...OBJ,
   }),
 });
 
-module.exports.LessonType = LessonType;
-module.exports.Lesson2Type = Lesson2Type;
+export { LessonType, Lesson2Type };

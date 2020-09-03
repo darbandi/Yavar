@@ -4,9 +4,10 @@
  * Module dependencies.
  */
 
-var app = require("../app");
+import app from "../app";
 var debug = require("debug")("my-github:server");
-var http = require("http");
+import http from "http";
+import mongo from "mongoose";
 
 /**
  * Get port from environment and store in Express.
@@ -25,7 +26,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-const mongo = require("mongoose");
+
 const url = `${process.env.SERVER_ADDRESS}/${process.env.DTABASE_NAME}`;
 
 mongo

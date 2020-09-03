@@ -1,24 +1,21 @@
-const graphql = require("graphql");
-const TagModel = require("./tag.model");
-const TagType = require("./tag.type");
-const { AccessToContent } = require("./../../Utils");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLBoolean,
   GraphQLString,
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
   GraphQLInt,
-} = graphql;
+} from "graphql";
+import TagModel from "./tag.model";
+import {TagType} from "./tag.type";
+import { AccessToContent } from "./../../Utils";
 
 /**
  * get one tag
  */
 const tag = {
-  type: TagType.TagType,
+  type: TagType,
   description: "دریافت جزئیات یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -38,7 +35,7 @@ const tag = {
  * get tags list
  */
 const tags = {
-  type: new GraphQLList(TagType.TagType),
+  type: new GraphQLList(TagType),
   description: "دریافت لیست تگ‌ها - فیلتر بر روی متن تگ",
   args: {
     text: { type: GraphQLString },
@@ -102,7 +99,7 @@ const tagsCount = {
  * add one tag
  */
 const addTag = {
-  type: TagType.TagType,
+  type: TagType,
   description: "افزودن تگ",
   args: {
     surah_id: { type: GraphQLInt },
@@ -131,7 +128,7 @@ const addTag = {
  * update one tag
  */
 const updateTag = {
-  type: TagType.TagType,
+  type: TagType,
   description: "ویرایش یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -156,7 +153,7 @@ const updateTag = {
  * delete tag
  */
 const deleteTag = {
-  type: TagType.TagType,
+  type: TagType,
   description: "حذف یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -178,7 +175,7 @@ const deleteTag = {
 
 const Query = new GraphQLObjectType({
   name: "Query",
-  description:"دریافت اطلاعات تگ‌ها",
+  description: "دریافت اطلاعات تگ‌ها",
   fields: {
     tag,
     tags,
@@ -196,7 +193,7 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: Query,
   mutation: Mutation,
 });

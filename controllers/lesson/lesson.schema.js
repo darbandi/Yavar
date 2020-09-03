@@ -1,22 +1,19 @@
-const graphql = require("graphql");
-const LessonModel = require("./lesson.model");
-const LessonType = require("./lesson.type");
-
-const {
+import {
   GraphQLObjectType,
   GraphQLNonNull,
-  GraphQLString,
   GraphQLSchema,
   GraphQLList,
   GraphQLID,
   GraphQLInt,
-} = graphql;
+} from "graphql";
+import LessonModel from "./lesson.model";
+import {LessonType} from "./lesson.type";
 
 /**
  * get one lesson
  */
 const lesson = {
-  type: LessonType.LessonType,
+  type: LessonType,
   description: "دریافت جزئیات یک سوره",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -37,7 +34,7 @@ const lesson = {
  * get lessons list
  */
 const lessons = {
-  type: new GraphQLList(LessonType.LessonType),
+  type: new GraphQLList(LessonType),
   description: "دریافت لیست سوره‌ها - فیلتر بر روی آیدی سوره",
   args: {
     surah_id: { type: GraphQLInt },
@@ -100,6 +97,6 @@ const Query = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: Query,
 });
