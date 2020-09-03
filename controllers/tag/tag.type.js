@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const UserType = require("./../user/user.type");
 const UserModel = require("./../user/user.model");
-const VerseType = require("./../verse/verse2.type");
+const VerseType = require("./../verse/verse.type");
 const VerseModel = require("./../verse/verse.model");
 
 const {
@@ -13,43 +13,47 @@ const {
   GraphQLBoolean,
 } = graphql;
 
+const OBJ = {
+  id: {
+    type: GraphQLID,
+    description: "آیدی یکتا",
+  },
+  surah_id: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "آیدی سوره",
+  },
+  verse_id: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "ایدی آیه",
+  },
+  text: {
+    type: GraphQLNonNull(GraphQLString),
+    required: true,
+    description: "متن تگ",
+  },
+  is_delete: {
+    type: GraphQLNonNull(GraphQLBoolean),
+    required: true,
+    default: false,
+    description: "حذف شده است یا نه",
+  },
+  created_at: {
+    type: GraphQLNonNull(GraphQLString),
+    default: Date.now,
+    description: "تاریخ ایجاد",
+  },
+  user_id: {
+    type: GraphQLNonNull(GraphQLString),
+    description: "آیدی کاربر",
+  },
+};
+
 const TagType = new GraphQLObjectType({
   name: "Tag",
   fields: () => ({
-    id: {
-      type: GraphQLID,
-      description: "آیدی یکتا",
-    },
-    surah_id: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "آیدی سوره",
-    },
-    verse_id: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "ایدی آیه",
-    },
-    text: {
-      type: GraphQLNonNull(GraphQLString),
-      required: true,
-      description: "متن تگ",
-    },
-    is_delete: {
-      type: GraphQLNonNull(GraphQLBoolean),
-      required: true,
-      default: false,
-      description: "حذف شده است یا نه",
-    },
-    created_at: {
-      type: GraphQLNonNull(GraphQLString),
-      default: Date.now,
-      description: "تاریخ ایجاد",
-    },
-    user_id: {
-      type: GraphQLNonNull(GraphQLString),
-      description: "آیدی کاربر",
-    },
+    ...OBJ,
     user: {
       type: UserType,
       description: "کاربر",
@@ -64,7 +68,7 @@ const TagType = new GraphQLObjectType({
       },
     },
     verse: {
-      type: VerseType,
+      type: VerseType.Verse2Type,
       description: "آیه",
       resolve: (parent, args) => {
         return VerseModel.findOne({
@@ -81,4 +85,4 @@ const TagType = new GraphQLObjectType({
   }),
 });
 
-module.exports = TagType;
+module.exports.TagType = TagType;

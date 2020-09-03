@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-// const UserType = require("./controllers/user/user.type");
 const UserModel = require("./controllers/user/user.model");
 
 /**

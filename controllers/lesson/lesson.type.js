@@ -10,46 +10,50 @@ const {
   GraphQLList,
 } = graphql;
 
+const OBJ = {
+  id: {
+    type: GraphQLID,
+    description: "آیدی یکتا",
+  },
+  surah_id: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "شماره سوره",
+  },
+  order: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "ترتیب سوره",
+  },
+  surah_name: {
+    type: GraphQLNonNull(GraphQLString),
+    required: true,
+    description: "نام سوره",
+  },
+  verse_count: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "تعداد آیه‌های سوره",
+  },
+  sequence_of_descent: {
+    type: GraphQLNonNull(GraphQLInt),
+    required: true,
+    description: "ترتیب نزول سوره",
+  },
+  place_of_descent: {
+    type: GraphQLNonNull(GraphQLString),
+    required: true,
+    description: "محل نزول سوره",
+  },
+};
+
 const LessonType = new GraphQLObjectType({
   name: "Lesson",
   description: "اسکیمای سوره‌ها",
   fields: () => ({
-    id: {
-      type: GraphQLID,
-      description: "آیدی یکتا",
-    },
-    surah_id: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "شماره سوره",
-    },
-    order: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "ترتیب سوره",
-    },
-    surah_name: {
-      type: GraphQLNonNull(GraphQLString),
-      required: true,
-      description: "نام سوره",
-    },
-    verse_count: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "تعداد آیه‌های سوره",
-    },
-    sequence_of_descent: {
-      type: GraphQLNonNull(GraphQLInt),
-      required: true,
-      description: "ترتیب نزول سوره",
-    },
-    place_of_descent: {
-      type: GraphQLNonNull(GraphQLString),
-      required: true,
-      description: "محل نزول سوره",
-    },
+    ...OBJ,
     verses: {
-      type: new GraphQLList(VerseType),
+      type: new GraphQLList(VerseType.VerseType),
       description: "لیست آیه‌های این سوره ",
       args: {
         page: { type: GraphQLInt },
@@ -72,4 +76,14 @@ const LessonType = new GraphQLObjectType({
     },
   }),
 });
-module.exports = LessonType;
+
+const Lesson2Type = new GraphQLObjectType({
+  name: "Lesson2",
+  description: "اسکیمای سوره‌ها",
+  fields: () => ({
+    ...OBJ
+  }),
+});
+
+module.exports.LessonType = LessonType;
+module.exports.Lesson2Type = Lesson2Type;

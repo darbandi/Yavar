@@ -16,7 +16,7 @@ const {
  * get one lesson
  */
 const lesson = {
-  type: LessonType,
+  type: LessonType.LessonType,
   description: "دریافت جزئیات یک سوره",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -37,7 +37,7 @@ const lesson = {
  * get lessons list
  */
 const lessons = {
-  type: new GraphQLList(LessonType),
+  type: new GraphQLList(LessonType.LessonType),
   description: "دریافت لیست سوره‌ها - فیلتر بر روی آیدی سوره",
   args: {
     surah_id: { type: GraphQLInt },

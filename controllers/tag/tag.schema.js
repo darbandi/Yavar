@@ -18,8 +18,8 @@ const {
  * get one tag
  */
 const tag = {
-  type: TagType,
-  description:"دریافت جزئیات یک تگ",
+  type: TagType.TagType,
+  description: "دریافت جزئیات یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
   },
@@ -38,7 +38,7 @@ const tag = {
  * get tags list
  */
 const tags = {
-  type: new GraphQLList(TagType),
+  type: new GraphQLList(TagType.TagType),
   description: "دریافت لیست تگ‌ها - فیلتر بر روی متن تگ",
   args: {
     text: { type: GraphQLString },
@@ -102,7 +102,7 @@ const tagsCount = {
  * add one tag
  */
 const addTag = {
-  type: TagType,
+  type: TagType.TagType,
   description: "افزودن تگ",
   args: {
     surah_id: { type: GraphQLInt },
@@ -131,7 +131,7 @@ const addTag = {
  * update one tag
  */
 const updateTag = {
-  type: TagType,
+  type: TagType.TagType,
   description: "ویرایش یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -156,7 +156,7 @@ const updateTag = {
  * delete tag
  */
 const deleteTag = {
-  type: TagType,
+  type: TagType.TagType,
   description: "حذف یک تگ",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },

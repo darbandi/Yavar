@@ -16,7 +16,7 @@ const {
  * get one verse
  */
 const verse = {
-  type: VerseType,
+  type: VerseType.VerseType,
   description: "دریافت جزئیات یک آیه",
   args: {
     id: { type: GraphQLNonNull(GraphQLID) },
@@ -37,7 +37,7 @@ const verse = {
  * get verses list
  */
 const verses = {
-  type: new GraphQLList(VerseType),
+  type: new GraphQLList(VerseType.VerseType),
   description: "دریافت لیست آیه‌ها - فیلتر بر روی آیدی آیه",
   args: {
     verse_id: { type: GraphQLInt },
