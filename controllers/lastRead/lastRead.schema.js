@@ -15,18 +15,31 @@ import { AccessToContent } from "../../Utils";
  */
 const lastRead = {
   type: LastReadType,
-  description: "دریافت جزئیات آخرین قرائت",
+  description: "دریافت جزئیات آخرین قرائت کاربر - آیدی در ورودی میتواند به یکی از قرائت ها نیز اشاره کند",
   args: {
-    id: { type: GraphQLNonNull(GraphQLID) },
+    id: { type: GraphQLID },
   },
   resolve: (parent, { id }, header) => {
-    return LastReadModel.findById(id)
-      .then((lastRead) => {
-        return AccessToContent(lastRead, header, `${id} یافت نشد`);
+    if (!id) {
+      return LastReadModel.findOne({
+        user_id: header.account._id,
       })
-      .catch((err) => {
-        throw err;
-      });
+        .sort("-verse_id")
+        .then((lastRead) => {
+          return lastRead;
+        })
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      return LastReadModel.findById(id)
+        .then((lastRead) => {
+          return AccessToContent(lastRead, header, `${id} یافت نشد`);
+        })
+        .catch((err) => {
+          throw err;
+        });
+    }
   },
 };
 
