@@ -49,7 +49,7 @@ const FavoriteType = new GraphQLObjectType({
     ...OBJ,
     user: {
       type: UserType,
-      description: "کاربر",
+      description: "کاربری که این آیه را به علاقه‌مندی‌های خود اضافه کرده است",
       resolve: (parent, args) => {
         return UserModel.findById(parent.user_id)
           .then((result) => {
@@ -62,7 +62,7 @@ const FavoriteType = new GraphQLObjectType({
     },
     verse: {
       type: Verse2Type,
-      description: "آیه",
+      description: "آیه‌ای که کاربر به علاقه‌مندی‌های خود اضافه کرده است",
       resolve: (parent, args) => {
         return VerseModel.findOne({
           verse_id: parent.verse_id,

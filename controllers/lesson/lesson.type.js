@@ -8,6 +8,8 @@ import {
 } from "graphql";
 import { VerseType } from "./../verse/verse.type";
 import VerseModel from "./../verse/verse.model";
+import { LastReadType } from "./../lastRead/lastRead.type";
+import LastReadModel from "./../lastRead/lastRead.model";
 
 const OBJ = {
   id: {
@@ -70,6 +72,22 @@ const LessonType = new GraphQLObjectType({
           })
           .catch((err) => {
             throw err;
+          });
+      },
+    },
+    verses_read: {
+      type: GraphQLInt,
+      description: "تعداد آیه های خوانده شده توسط کاربر",
+      resolve: (parent, args, header) => {
+        return LastReadModel.countDocuments({
+          user_id: header.account._id,
+          surah_id: parent.surah_id,
+        })
+          .then((result) => {
+              return result;
+          })
+          .catch((err) => {
+            return err;
           });
       },
     },

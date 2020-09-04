@@ -54,7 +54,7 @@ const TagType = new GraphQLObjectType({
     ...OBJ,
     user: {
       type: UserType,
-      description: "کاربر",
+      description: "کاربری که این تگ را زده",
       resolve: (parent, args) => {
         return UserModel.findById(parent.user_id)
           .then((result) => {
@@ -67,7 +67,7 @@ const TagType = new GraphQLObjectType({
     },
     verse: {
       type: Verse2Type,
-      description: "آیه",
+      description: "آیه‌ای که این تگ روی آن زده شده است",
       resolve: (parent, args) => {
         return VerseModel.findOne({
           verse_id: parent.verse_id,

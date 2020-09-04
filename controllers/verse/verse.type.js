@@ -100,6 +100,7 @@ const VerseType = new GraphQLObjectType({
     },
     is_favorite: {
       type: FavoriteType,
+      description: "اگر این آیه به علاقه‌مندی‌ها اضافه شده باشد میتوان آیدی آن را فراخوانی کرد",
       resolve: (parent, args, header) => {
         return FavoriteModel.findOne({
           surah_id: parent.surah_id,
@@ -116,6 +117,7 @@ const VerseType = new GraphQLObjectType({
     },
     is_read: {
       type: LastReadType,
+      description: "اگر این آیه خوانده شده بود میتوان آیدی آن را فراخوانی کرد",
       resolve: (parent, args, header) => {
         return LastReadModel.findOne({
           surah_id: parent.surah_id,
@@ -139,6 +141,7 @@ const Verse2Type = new GraphQLObjectType({
     ...OBJ,
     lesson: {
       type: Lesson2Type,
+      description: "سوره مربوط به آیه",
       resolve: (parent, args) => {
         return LessonModel.findOne({
           surah_id: parent.surah_id,
