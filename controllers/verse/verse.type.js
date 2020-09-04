@@ -5,11 +5,14 @@ import {
   GraphQLInt,
   GraphQLID,
   GraphQLList,
+  GraphQLBoolean,
 } from "graphql";
 import { TagType } from "./../tag/tag.type";
 import TagModel from "./../tag/tag.model";
 import { Lesson2Type } from "../lesson/lesson.type";
 import LessonModel from "../lesson/lesson.model";
+import { FavoriteType } from "../favorite/favorite.type";
+import FavoriteModel from "../favorite/favorite.model";
 import _ from "lodash";
 
 const OBJ = {
@@ -90,6 +93,22 @@ const VerseType = new GraphQLObjectType({
           })
           .catch((err) => {
             throw err;
+          });
+      },
+    },
+    is_favorite: {
+      type: FavoriteType,
+      resolve: (parent, args, header) => {
+        return FavoriteModel.findOne({
+          surah_id: parent.surah_id,
+          verse_id: parent.verse_id,
+          user_id: header.account._id,
+        })
+          .then((result) => {
+            return result;
+          })
+          .catch((error) => {
+            throw error;
           });
       },
     },
