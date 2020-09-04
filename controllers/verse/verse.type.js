@@ -13,6 +13,8 @@ import { Lesson2Type } from "../lesson/lesson.type";
 import LessonModel from "../lesson/lesson.model";
 import { FavoriteType } from "../favorite/favorite.type";
 import FavoriteModel from "../favorite/favorite.model";
+import { LastReadType } from "../lastRead/lastRead.type";
+import LastReadModel from "../lastRead/lastRead.model";
 import _ from "lodash";
 
 const OBJ = {
@@ -100,6 +102,22 @@ const VerseType = new GraphQLObjectType({
       type: FavoriteType,
       resolve: (parent, args, header) => {
         return FavoriteModel.findOne({
+          surah_id: parent.surah_id,
+          verse_id: parent.verse_id,
+          user_id: header.account._id,
+        })
+          .then((result) => {
+            return result;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      },
+    },
+    is_read: {
+      type: LastReadType,
+      resolve: (parent, args, header) => {
+        return LastReadModel.findOne({
           surah_id: parent.surah_id,
           verse_id: parent.verse_id,
           user_id: header.account._id,
