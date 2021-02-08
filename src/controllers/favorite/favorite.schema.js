@@ -40,9 +40,7 @@ const favorites = {
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { page, count }, header) => {
-    if (!page) page = 1;
-    if (!count) count = 10;
+  resolve: (parent, { page = 1, count = 10 }, header) => {
     return FavoriteModel.find(
       {
         user_id: header.account._id,

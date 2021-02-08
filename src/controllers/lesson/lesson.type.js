@@ -60,9 +60,7 @@ const LessonType = new GraphQLObjectType({
         page: { type: GraphQLInt },
         count: { type: GraphQLInt },
       },
-      resolve: (parent, { page, count }) => {
-        if (!page) page = 1;
-        if (!count) count = 10;
+      resolve: (parent, { page = 1, count = 10 }) => {
         return VerseModel.find({ surah_id: parent.surah_id }, null, {
           skip: (page - 1) * count,
           limit: count,

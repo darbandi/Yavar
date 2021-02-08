@@ -42,7 +42,7 @@ const tags = {
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { text, page, count }, header) => {
+  resolve: (parent, { text, page = 1, count = 10 }, header) => {
     if (text) {
       return TagModel.find({
         text: text,
@@ -55,8 +55,6 @@ const tags = {
           throw err;
         });
     } else {
-      if (!page) page = 1;
-      if (!count) count = 10;
       return TagModel.find(
         {
           user_id: header.account._id,

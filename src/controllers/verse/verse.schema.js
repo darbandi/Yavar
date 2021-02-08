@@ -41,7 +41,7 @@ const verses = {
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { verse_id, page, count }) => {
+  resolve: (parent, { verse_id, page = 1, count = 10 }) => {
     if (verse_id) {
       return VerseModel.find({
         verse_id: verse_id,
@@ -53,8 +53,6 @@ const verses = {
           throw err;
         });
     } else {
-      if (!page) page = 1;
-      if (!count) count = 10;
       return VerseModel.find(null, null, {
         skip: (page - 1) * count,
         limit: count,

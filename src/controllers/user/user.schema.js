@@ -42,7 +42,7 @@ const users = {
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { email, page, count }, header) => {
+  resolve: (parent, { email, page = 1, count = 10 }, header) => {
     if (email) {
       return UserModel.find({
         email: email,
@@ -54,8 +54,6 @@ const users = {
           throw err;
         });
     } else {
-      if (!page) page = 1;
-      if (!count) count = 10;
       return UserModel.find(null, null, {
         skip: (page - 1) * count,
         limit: count,

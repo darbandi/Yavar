@@ -7,7 +7,7 @@ import {
   GraphQLInt,
 } from "graphql";
 import LessonModel from "./lesson.model";
-import {LessonType} from "./lesson.type";
+import { LessonType } from "./lesson.type";
 
 /**
  * get one lesson
@@ -41,7 +41,7 @@ const lessons = {
     page: { type: GraphQLInt },
     count: { type: GraphQLInt },
   },
-  resolve: (parent, { surah_id, page, count }) => {
+  resolve: (parent, { surah_id, page = 1, count = 10 }) => {
     if (surah_id) {
       return LessonModel.find({
         surah_id: surah_id,
@@ -53,8 +53,6 @@ const lessons = {
           throw err;
         });
     } else {
-      if (!page) page = 1;
-      if (!count) count = 10;
       return LessonModel.find(null, null, {
         skip: (page - 1) * count,
         limit: count,
