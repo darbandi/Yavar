@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // get Dynamic Controller
-var routePath = "./routes/";
+var routePath = "./src/routes/";
 fs.readdirSync(routePath).forEach(function (file) {
   var route = routePath + file;
   const address = "/" + file.replace(".router.js", "");

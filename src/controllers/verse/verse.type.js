@@ -41,6 +41,10 @@ const OBJ = {
     type: GraphQLNonNull(GraphQLString),
     required: true,
     description: "کلمات جدید",
+    resolve: (args) => {
+      let temp = args.new_words.replace(/\'/g, '"');
+      return temp;
+    },
   },
   component: {
     type: GraphQLNonNull(GraphQLInt),
@@ -100,7 +104,8 @@ const VerseType = new GraphQLObjectType({
     },
     is_favorite: {
       type: FavoriteType,
-      description: "اگر این آیه به علاقه‌مندی‌ها اضافه شده باشد میتوان آیدی آن را فراخوانی کرد",
+      description:
+        "اگر این آیه به علاقه‌مندی‌ها اضافه شده باشد میتوان آیدی آن را فراخوانی کرد",
       resolve: (parent, args, header) => {
         return FavoriteModel.findOne({
           surah_id: parent.surah_id,
