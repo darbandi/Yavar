@@ -33,10 +33,10 @@ const Auth = (req, res, next) => {
     res.send("401 Unauthorized");
   } else {
     const token = req.headers.authorization.replace("Bearer ", "");
-    jwt.verify(token, "shhhhh", function (err, decoded) {
+    jwt.verify(token, "shhhhh", (err, decoded) => {
       if (err) {
-        res.statusCode = 404;
-        res.send("404 invalid token");
+        res.statusCode = 401;
+        res.send("401 Unauthorized");
       }
       req.account = decoded;
       next();
