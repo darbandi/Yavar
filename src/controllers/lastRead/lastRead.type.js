@@ -66,6 +66,7 @@ const LastReadType = new GraphQLObjectType({
       resolve: (parent, args) => {
         return VerseModel.findOne({
           verse_id: parent.verse_id,
+          surah_id: parent.surah_id,
         })
           .then((result) => {
             return result;
